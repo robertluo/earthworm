@@ -11,14 +11,14 @@
     (if connection
       this
       (do
-        (info "Starting datomic database.")
+        (info {:event :start :component :datomic})
         (assoc this :connection (util/init-conn db-def uri sample?)))))
   (stop [this]
     (if connection
       (do
-        (info "Stopping datomic database.")
+        (info {:event :stop :component :datomic})
         (when sample?
-          (info "Deleting sample database.")
+          (info {:event :delete-database :component :datomic})
           (d/delete-database uri))
         (assoc this :connection nil))
       this)))
