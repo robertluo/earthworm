@@ -1,4 +1,4 @@
-(ns earthworm.http-kit
+(ns earthworm.service.http-kit
   (:require [com.stuartsierra.component :as component]
             [org.httpkit.server :as kit]
             [taoensso.timbre :refer (info)]))

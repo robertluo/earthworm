@@ -1,9 +1,9 @@
-(ns earthworm.datomic
+(ns earthworm.service.datomic
   "提供 datomic 数据库服务"
   (:require [datomic.api :as d]
-            [earthworm.datomic.util :as util]
+            [earthworm.util.datomic :as util]
             [com.stuartsierra.component :as component]
-            [taoensso.timbre :as log :refer (info)]))
+            [taoensso.timbre :refer (info)]))
 
 (defrecord DatomicDatabase [uri db-def sample? connection]
   component/Lifecycle
