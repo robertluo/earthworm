@@ -4,9 +4,14 @@ earthworm - 蚯蚓
 
 默默地在地下工作，给植物——整个服务器程序松土让它更容易破土而出。
 
-用 stuartsierra 的 component 库所写成的可重用的基本服务集合。目前的内容有：
+它包括一些经常可以重用的工具函数。
 
- * `earthworm.datomic` — 提供数据库服务和基本的 util 函数
+ * `earthworm.datomic.util` 提供 datamic 数据库的常用工具函数
+
+
+以及用 stuartsierra 的 component 库所写成的可重用的基本服务集合。目前的内容有：
+
+ * `earthworm.datomic` — 提供数据库服务
  * `earthworm.http-kit` - 提供 http-kit 的 web 服务器
 
 以上每个命名空间都有一个 `service` 函数，接受一个 map 作为参数。
@@ -39,6 +44,13 @@ earthworm - 蚯蚓
 ```
 
 Http 服务依赖于一个 web-app，web-app 是一个含有 :handler 字段的 component 组件。
+
+
+## 版本
+
+### 0.1.0
+
+包括 datomic 服务与 http-kit web 服务、datomic 工具函数集
 
 ## License
 
