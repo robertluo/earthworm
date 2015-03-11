@@ -22,10 +22,13 @@
   (let [channels (atom {})]
     (doseq [[from xf to] pl-def]
       (if (vector? xf)
+        ; 当第二参数是 vector 时, 分离通道
         (let [from (get-ch channels from)
-              pub (async/pub from first)]
-          (doseq [topic xf]
+              [split-fn & dests] xf
+              pub (async/pub from split-fn)]
+          (doseq [topic dests]
             (async/sub pub topic (get-ch channels topic))))
+        ; 流水线定义
         (let [from (get-ch channels from)
               to (get-ch channels to)]
           (async/pipeline 8 to xf from))))
