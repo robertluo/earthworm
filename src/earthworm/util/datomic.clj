@@ -17,9 +17,12 @@
           :db.install/_attribute :db.part/db} options))
 
 (defn entities
-  "给一组实体 ents 在 part 这个数据库分区中顺序生成临时 id"
-  [part ents]
-  (map #(assoc %1 :db/id (d/tempid part %2)) ents (iterate dec -1)))
+      "给一组实体 ents中没有包含 :db/id 字段的实体 在 part 这个数据库分区中顺序生成临时 id"
+      [part ents]
+      (map #(if (:db/id %1)
+             %1
+             (assoc %1 :db/id (d/tempid part %2)))
+           ents (iterate dec -1)))
 
 (defn ensure-db
   "建立数据库结构和种子数据。结构为 schema, 如果有种子数据 seed-data，也记入数据库."
@@ -81,7 +84,7 @@
 (defn init-conn
   "用数据库定义来新生成数据库, 返回到它的连接. 如果不指定 uri, 将随机生成一个内存数据库. 用于测试."
   ([db-def]
-    (let [uri (str "datomic:mem:test" (rand-int 10000))]
+    (let [uri (str "datomic:mem:test" (java.util.UUID/randomUUID))]
       (init-conn db-def uri true)))
   ([{:keys [schema seed sample]} uri sample?]
     (d/create-database uri)
