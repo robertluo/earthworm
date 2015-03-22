@@ -10,7 +10,7 @@
       (recur (conj rst word))
       rst)))
 
-(defn get-ch [chs name]
+(defn- get-ch [chs name]
   (if-let [ch (get @chs name)]
     ch
     (do
@@ -19,7 +19,9 @@
 
 (defn workflow
   [pl-def]
-  (let [channels (atom {})]
+  (let [error-chan (async/chan 20)
+        channels (atom {:exception error-chan})
+        ex-handler (fn [e] [:error e])]
     (doseq [[from xf to] pl-def]
       (if (vector? xf)
         ; 当第二参数是 vector 时, 分离通道
@@ -31,5 +33,5 @@
         ; 流水线定义
         (let [from (get-ch channels from)
               to (get-ch channels to)]
-          (async/pipeline 8 to xf from))))
+          (async/pipeline 8 to xf from true ex-handler))))
     @channels))
