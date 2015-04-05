@@ -57,6 +57,10 @@ Http 服务依赖于一个 web-app，web-app 是一个含有 :handler 字段的 
 
 重新组织命名空间。并加上 util 的单元测试。
 
+### 0.2.1
+
+增加了几个新的数据库内置函数。
+
 ## License
 
 Copyright © 2015 @robortluo
