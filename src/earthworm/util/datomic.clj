@@ -170,5 +170,7 @@
 (defn init-db [def-db]
   (some-> def-db init-conn d/db))
 
-(defn future-db [db trans]
-  (:db-after (d/with db trans)))
+(defn future-db
+  "给定事务数据 trans, 返回最终的 db. 用于测试"
+  [db & trans]
+  (reduce #(:db-after (d/with %1 %2)) db trans))

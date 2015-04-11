@@ -61,6 +61,14 @@ Http 服务依赖于一个 web-app，web-app 是一个含有 :handler 字段的 
 
 增加了几个新的数据库内置函数。
 
+### 0.2.2
+
+让 future-db 支持多个事务数据
+
+### 0.2.3
+
+纠正 defbean 的 bug
+
 ## License
 
 Copyright © 2015 @robortluo
