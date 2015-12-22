@@ -116,17 +116,19 @@
                  (concat (map (fn [v] [:db/retract eid attr v]) to-be-retract)
                          (when (seq to-be-add) [{:db/id eid attr (vec to-be-add)}])))})
 
-(def create-unique-data
+(def ensure-unique
   "根据指定的unique键, 创建唯一一条数据, 若unique指定数据已经被创建, 则本条数据不会写入数据库;
   本函数旨满足要指定组合型唯一约束的场景, datomic数据库定义时不能指定组合唯一约束.
   lookup-define 使用 lookup-eid 中的定义."
   #db/fn
-      {:lang :clojure
+      {:lang   :clojure
        :params [db lookup-define new-data]
-       :code (let [fn-lookup-eid (-> (d/entity db :db.fn/lookup-eid) :db/fn)
-                   eid (fn-lookup-eid db lookup-define)]
-               (when-not eid
-                 new-data))})
+       :code   (let [fn-lookup-eid (-> (d/entity db :db.fn/lookup-eid) :db/fn)
+                     eid (fn-lookup-eid db lookup-define)]
+                 (if-not eid
+                   new-data
+                   (throw (ex-info " transaction failed."
+                                   {:reason  (str "the unique val " lookup-define "is existed.")}))))})
 
 ;;============================
 
@@ -164,7 +166,7 @@
   "内嵌在每个数据库的函数"
   (entities
     :db.part/user
-    (mapv db-fn [#'seq-id #'atom-plus #'lookup-eid #'smart-atom-plus #'create-or-update #'update-set #'create-unique-data])))
+    (mapv db-fn [#'seq-id #'atom-plus #'lookup-eid #'smart-atom-plus #'create-or-update #'update-set #'ensure-unique])))
 
 (defn init-conn
   "用数据库定义来新生成数据库, 返回到它的连接. 如果不指定 uri, 将随机生成一个内存数据库. 用于测试."
