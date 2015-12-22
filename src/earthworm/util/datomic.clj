@@ -66,14 +66,17 @@
        :params [db lookup-define]
        :code (let [id (first lookup-define)
                    [component-key kvs] (second lookup-define)]
-               (if component-key
-                 (let [where-cluase (mapv #(apply vector '?l %) kvs)]
-                   (ffirst (d/q {:find  ['?l]
-                                 :in    ['$ '?id]
-                                 :where (concat [['?id component-key '?l]]
-                                                where-cluase)}
-                                db id)))
-                 (-> (d/entity db id) :db/id)))})
+               (try
+                 (if component-key
+                   (let [where-cluase (mapv #(apply vector '?l %) kvs)]
+                     (ffirst (d/q {:find  ['?l]
+                                   :in    ['$ '?id]
+                                   :where (concat [['?id component-key '?l]]
+                                                  where-cluase)}
+                                  db id)))
+                   (-> (d/entity db id) :db/id))
+                 (catch Exception e
+                   nil)))})
 
 (def smart-atom-plus
   "在数据库中对指定属性 attr 上增加 amount (先取再加) 的高级版本,
