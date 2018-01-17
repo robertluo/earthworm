@@ -72,15 +72,18 @@
 
    例如: (defbean date java.util.Date
            [[:date/month .getMonth .setMonth]
-            [:date/year [.getYear #(+ % 1900)] [.setYear #(- % 1900)]]])
+            [:date/year [.getYear inc-year] [.setYear dec-year]]])
+
+  其中： inc-year, dec-year 是单参数函数.
 
    将定义两个函数, from-date 和 to-date."
   [name clazz desc]
   (let [[from-macro to-macro] (fn-names name)
-        obj (gensym "obj")
+        obj-sym (gensym "obj")
+        obj (with-meta 'obj-sym {:tag clazz})
         finside (mapv (fn [[k getter]]
                         (if (vector? getter)
-                          `[~k (~(last getter) (~(first getter) ~obj))]
+                          `[~k (some-> ~obj ~(first getter) ~(last getter))]
                           `[~k (~getter ~obj)]))
                       desc)
         bean (gensym "bean")
