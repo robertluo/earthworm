@@ -1,4 +1,4 @@
-(defproject earthworm "0.2.4-SNAPSHOT"
+(defproject earthworm "0.2.4"
   :description "Common components and utils for server side development"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
